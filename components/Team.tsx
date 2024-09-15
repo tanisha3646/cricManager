@@ -1,35 +1,37 @@
-import React from 'react'
-import {Text, View, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native';
-import app from '../style'
+import React from 'react';
+import { Text, View, TouchableOpacity, SafeAreaView, Image, FlatList, StyleSheet } from 'react-native';
+import app from '../style';
 import SrchInput from './SrchInput';
 import CreateTeam from './CreateTeam';
+import ListTeam from './ListTeam';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TeamState from '../context/Team/TeamState';
+import TeamMem from './TeamMem';
 
 const Stack = createNativeStackNavigator();
 
 const Team = () => {
   return (
-      <Stack.Navigator screenOptions={{headerShown:false}}>
-          <Stack.Screen name="Team" component={Teams} />
-          <Stack.Screen name="CreateTeam" component={CreateTeam}/>
+    <TeamState>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Team" component={Teams} />
+        <Stack.Screen name="TeamMem" component={TeamMem} />
+        <Stack.Screen name="CreateTeam" component={CreateTeam} />
       </Stack.Navigator>
-      
-  )
-}
-const Teams = ({navigation}:any) => {
+    </TeamState>
+  );
+};
+
+const Teams = ({ navigation }: any) => {
   return (
     <SafeAreaView style={app.splashContainer}>
-    <View style={app.container}>
-    <View>
-    <SrchInput keyword='Search Team'/>  
-    </View> 
-    <TouchableOpacity style={app.button} onPress={()=>{navigation.navigate('CreateTeam')}}>
+      <SrchInput keyword="Search Team" />
+      <ListTeam navigation={navigation}/>
+      <TouchableOpacity style={app.button} onPress={() => { navigation.navigate('CreateTeam'); }}>
         <Text style={app.buttonText}>Add Team</Text>
-      </TouchableOpacity>    
-    </View>
+      </TouchableOpacity>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default Team
+export default Team;

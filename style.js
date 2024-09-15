@@ -36,7 +36,7 @@ export default app = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 10,
     marginVertical: 10,
-    marginHorizontal:10,
+    marginRight:10,
   },
   otpBack:{
     width: '10%',
@@ -127,6 +127,23 @@ export default app = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     margin:5
-  }
+  },
+  shareContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: 'white',
+  },
+  shareOption: {
+    alignItems: 'center',
+    marginHorizontal: 10,
+  },
+  optionText: {
+    color: 'brown',
+    fontSize: 16,
+    marginTop: 5,
+    fontWeight: 'bold',
+  },
   });
   

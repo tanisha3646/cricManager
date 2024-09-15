@@ -2,30 +2,32 @@ import { useState } from "react";
 import TeamContext from "./TeamContext";
 
 const TeamState = (props: any) => {
-  const host = "http://localhost:5001";
+  const host = "http://10.0.2.2:5001";
   const [team, setTeam] = useState<any[]>([]);
 
   // Get all teams
-  const getTeam = async () => {
-    const response = await fetch(`${host}/api/Team/getTeam`, {
+  const getTeam = async (det:any, token :any) => {
+    det = JSON.stringify(det);
+    const response = await fetch(`${host}/api/Team/getTeam?det=${det}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        // "auth-token": localStorage.getItem('token')
+        "authorization": `Bearer ${token}`
       }
     });
-    const json = await response.json();
-    setTeam(json);
+    const res = await response.json();
+    console.log(res)
+    setTeam(res);
   };
 
-  const addTeamMem = async (nme: string, loc: string, logo: string | null, tag: string) => {
-    const response = await fetch(`${host}/api/Team/addTeamMem`, {
+  const addTeamMem = async (det:any, token :any) => {
+    const response = await fetch(`${host}/api/team/addTeam`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        // "auth-token": localStorage.getItem('token')
+        "authorization": `Bearer ${token}`
       },
-      body: JSON.stringify({ nme, loc, logo, tag })
+      body: JSON.stringify(det)
     });
     const json = await response.json();
     setTeam(json);
@@ -44,7 +46,7 @@ const TeamState = (props: any) => {
   };
 
   return (
-    <TeamContext.Provider value={{ team, setTeam, addTeamMem }}>
+    <TeamContext.Provider value={{ team, setTeam, addTeamMem, getTeam }}>
       {props.children}
     </TeamContext.Provider>
   );

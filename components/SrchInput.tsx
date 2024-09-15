@@ -3,9 +3,9 @@ import { View, TextInput, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import app from '../style';
 
-const SrchInput = ({wid, keyword}:any) => {
+const SrchInput = ({keyword, style, wid}:any) => {
   return (
-    <View style={[app.inputContainer, app.borderInput, {width:wid,height:40, flex:1,justifyContent:'flex-start'}]}>
+    <View style={[app.inputContainer, app.borderInput, {height:40, width:wid,justifyContent:'flex-start', margin:5}]}>
       <Icon name="search" size={20} color="brown" style={{marginVertical: 8, marginRight:5}} />
       <TextInput
         placeholder= {keyword}

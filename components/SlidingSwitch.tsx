@@ -1,11 +1,16 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { TouchableOpacity, View, Text } from 'react-native'
 import app from '../style';
 
 const SlidingSwitch = (props: any) => {  
   const [isOn, setIsSwitchOn] = useState(false);
+
+  useEffect(() => {
+    props.setGen(isOn?'F':'M');
+  }, [isOn]);
+
   return (
-      <TouchableOpacity style={[app.switchContainer]} onPress={() => {setIsSwitchOn(!isOn); props.setGen(isOn?'M':'F')}}>
+      <TouchableOpacity style={[app.switchContainer]} onPress={() => {setIsSwitchOn(!isOn)}}>
       {isOn ? (
         <>
           <View style={[app.switchCircle, { alignSelf: 'flex-end'}]} />

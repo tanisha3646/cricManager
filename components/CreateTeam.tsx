@@ -1,10 +1,12 @@
 import React, { useState, useContext} from 'react';
-import { Text, View, TouchableOpacity, ScrollView, SafeAreaView, TextInput, Image, StyleSheet} from 'react-native';
+import { Text, View, TouchableOpacity, ScrollView, SafeAreaView, TextInput, Image, StyleSheet,Modal} from 'react-native';
 import app from '../style';
 import SrchInput from './SrchInput';
 import ContactSrch from './ContactSrch';
 import AddImg from './AddImg';
 import TeamContext from '../context/Team/TeamContext';
+import ShareTeam from './ShareTeam';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const CreateTeam = () => {  
@@ -19,13 +21,23 @@ const CreateTeam = () => {
   const [loc, setLoc] = useState<string>('');
   const [tag, setTag] = useState<string>('');
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const addTeam = async() => {
-    // setSubmitted(true);
-    // if (nme || loc) {
-    //   await addTeamMem(nme, loc, logo, tag);
-    //   console.warn(team)
-    // }
+    setSubmitted(true);
+    if (nme || loc) {
+      setModalVisible(true);
+      let data = {
+        nme:nme,
+        loc:loc,
+        logo:(logo?logo:''),
+        tag:tag,
+        usrId:0
+      }
+
+      await addTeamMem(data, await AsyncStorage.getItem('userToken'));
+      console.log(team)
+    }
   };
 
   return (
@@ -35,13 +47,28 @@ const CreateTeam = () => {
           <TeamDet logo={logo} setLogo={setLogo} nme={nme} setNme={setNme} loc={loc} setLoc={setLoc} tag={tag} setTag={setTag} submitted={submitted}
           />
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 10 }}>
-            <SrchInput keyword='Add members using mobile number'/>
+            <SrchInput keyword='Add members using mobile number' wid='94%'/>
             <ContactSrch/>
           </View>
         </ScrollView>
         <TouchableOpacity style={app.button} onPress={addTeam}>
           <Text style={app.buttonText}>Create Team</Text>
         </TouchableOpacity>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <ShareTeam />
+              <TouchableOpacity style={app.button} onPress={() => setModalVisible(false)}>
+                <Text style={app.buttonText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
     </SafeAreaView>
   );
@@ -127,6 +154,19 @@ const styles = StyleSheet.create({
     color: 'red',
     marginTop: 5,
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  }
 });
 
 export default CreateTeam;

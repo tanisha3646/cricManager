@@ -1,5 +1,5 @@
 // UserDetail.js
-import React, { useState,useContext } from 'react';
+import React, { useState,useContext, useEffect } from 'react';
 import { TextInput, View, Text, Button, TouchableOpacity, ImageBackground } from 'react-native';
 import UserContext from '../context/User/UserContext';
 import SlidingSwitch from './SlidingSwitch';
@@ -29,25 +29,33 @@ const UserDetail = ({ navigation, route }: any) => {
     setShow(false);
   };
 
+  useEffect(()=>{    
+    console.log(token)
+    if(token){
+      handleLogin();
+    }
+  },[token]);
+
+  const handleLogin = async()=>{
+    await AsyncStorage.setItem('userToken', token);
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'MainTabNavigator' }],
+      })
+    );
+  }
+
   const registerUser = async() => {
     let dte = dob.split('/')
     const data = {
       fNme: firstNme,
       lNme: lastNme,
-      dob: dte[2]+'-' + dte[1]+'-' + dte[0],
+      dob: dte[2]+'-' + dte[0]+'-' + dte[1],
       gen: gen,
       mobTel: mob
     };
     await getUsr(data);
-    if(token){
-      await AsyncStorage.setItem('userToken', token);
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'MainTabNavigator' }],
-        })
-      );
-    }
   };
 
   return (
