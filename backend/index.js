@@ -12,6 +12,6 @@ app.use(express.json());
 app.use('/api/team', require('./routes/Team'));
 app.use('/api/user', require('./routes/Users'));
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`iNoteBook backend listening on port ${port}`)
 })

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { Modal, View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 
-const ModalMid = ({ visible, onClose, teamName, comp }: any) => {
+const ModalMid = ({ visible, onClose, comp }: any) => {
   return (
     <Modal
       transparent={true}
@@ -12,8 +12,7 @@ const ModalMid = ({ visible, onClose, teamName, comp }: any) => {
     <TouchableWithoutFeedback onPress={onClose}>
       <View style={styles.modalBackground}>
         <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>QR Code for {teamName}</Text>
-          {comp && comp()}
+          {comp}
         </View>
       </View>      
     </TouchableWithoutFeedback>
@@ -34,12 +33,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 8,
     alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    color: 'brown',
   }
 });
 

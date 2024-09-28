@@ -1,33 +1,52 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Text, View, TouchableOpacity, SafeAreaView, Image, FlatList, StyleSheet } from 'react-native';
 import app from '../style';
 import SrchInput from './SrchInput';
-import CreateTeam from './CreateTeam';
+import TeamDet from './TeamDet';
 import ListTeam from './ListTeam';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TeamState from '../context/Team/TeamState';
 import TeamMem from './TeamMem';
+import ModalMid from './ModalMid';
+import ShareTeam from './ShareTeam';
 
 const Stack = createNativeStackNavigator();
 
-const Team = () => {
+const Team = ({route}:any ) => {
+  const teamId = route?.params?.teamId || null;
+  const [modalVisible, setModalVisible] = useState<boolean>(false); 
+
+  useEffect(() => {
+    if (teamId) {
+      setModalVisible(true);
+    }
+  }, [teamId]);
+
   return (
+    <>
     <TeamState>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Team" component={Teams} />
         <Stack.Screen name="TeamMem" component={TeamMem} />
-        <Stack.Screen name="CreateTeam" component={CreateTeam} />
+        <Stack.Screen name="TeamDet" component={TeamDet} />
       </Stack.Navigator>
     </TeamState>
+    <ModalMid
+    visible={modalVisible}
+    onClose={() => setModalVisible(false)}
+    comp={() => <ShareTeam setModalVisible = {setModalVisible}/>}
+  />
+  </>
   );
 };
 
 const Teams = ({ navigation }: any) => {
+  const [srch, setSrch] = useState('');
   return (
     <SafeAreaView style={app.splashContainer}>
-      <SrchInput keyword="Search Team" />
-      <ListTeam navigation={navigation}/>
-      <TouchableOpacity style={app.button} onPress={() => { navigation.navigate('CreateTeam'); }}>
+      <SrchInput keyword="Search Team" srch={srch} setSrch = {setSrch} typ='default'/>
+      <ListTeam navigation={navigation} srch={srch}/>
+      <TouchableOpacity style={app.button} onPress={() => { navigation.navigate('TeamDet'); }}>
         <Text style={app.buttonText}>Add Team</Text>
       </TouchableOpacity>
     </SafeAreaView>

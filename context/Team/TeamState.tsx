@@ -16,7 +16,19 @@ const TeamState = (props: any) => {
       }
     });
     const res = await response.json();
-    console.log(res)
+    setTeam(res);
+  };
+
+  const addTeam = async (det:any, token :any) => {
+    const response = await fetch(`${host}/api/team/addTeam`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(det)
+    });
+    const res = await response.json();
     setTeam(res);
   };
 
@@ -29,24 +41,12 @@ const TeamState = (props: any) => {
       },
       body: JSON.stringify(det)
     });
-    const json = await response.json();
-    setTeam(json);
-  };
-
-  const addTeam = async () => {
-    const response = await fetch(`${host}/api/Team/addTeam`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        // "auth-token": localStorage.getItem('token')
-      },
-    });
-    const json = await response.json();
-    setTeam(json);
+    const res = await response.json();
+    setTeam(res);
   };
 
   return (
-    <TeamContext.Provider value={{ team, setTeam, addTeamMem, getTeam }}>
+    <TeamContext.Provider value={{ team, setTeam, addTeam, getTeam, addTeamMem}}>
       {props.children}
     </TeamContext.Provider>
   );

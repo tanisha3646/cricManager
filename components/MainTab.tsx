@@ -30,26 +30,26 @@ const MainTab = () => {
           tabBarActiveTintColor: 'brown',
           tabBarInactiveTintColor: '#9c8181',
           tabBarStyle: { backgroundColor: '#b3afaf' },
-          tabBarLabelStyle: { fontSize: 14}
+          tabBarLabel: () => null
         }}>
           <Tab.Screen name="Home" component={Home} options={{
               tabBarIcon: ({color}) => (
-                <Icon name="home" size={25} color={color}/>
+                <Icon name="home" size={26} color={color}/>
               ),
             }}/>
           <Tab.Screen name="Play" component={Play} options={{
               tabBarIcon: ({color}) => (
-                <Icon name="trophy" size={25} color={color}/>
+                <Icon name="trophy" size={26} color={color}/>
               ),
             }}/>
           <Tab.Screen name="Teams" component={Team} options={{
               tabBarIcon: ({color}) => (
-                <Icon name="users" size={25} color={color}/>
+                <Icon name="users" size={26} color={color}/>
               ),
             }}/>
           <Tab.Screen name="Profile" component={Profile} options={{
               tabBarIcon: ({color}) => (
-                <Icon name="user" size={25} color={color}/>
+                <Icon name="user" size={26} color={color}/>
               ),
             }}/>
         </Tab.Navigator>
