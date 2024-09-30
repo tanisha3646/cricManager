@@ -1,29 +1,21 @@
-import React, {useContext, useCallback, useState} from 'react';
-import {Text,View,Image,FlatList,StyleSheet,TouchableOpacity,
-} from 'react-native';
+import React, { useContext, useCallback, useState } from 'react';
+import { Text, View, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import TeamContext from '../context/Team/TeamContext';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useFocusEffect} from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import ModalMid from './ModalMid';
+import SrchInput from './SrchInput';
 
-interface Team {
-  teamId: number;
-  logo: string;
-  nme: string;
-  loc: string;
-  cnt: number;
-}
-
-const ListTeam = ({ navigation, srch }: any) => {
+const ListTeam = ({ navigation }: any) => {
   const context = useContext(TeamContext);
   if (!context) {
     throw new Error('useContext must be used within a TeamProvider');
   }
-  const {getTeam, team} = context;
+  const { getTeam, team } = context;
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const [selectedTeam, setSelectedTeam] = useState<any | null>(null);
 
   const handleQRCodeClick = (team: any) => {
     setSelectedTeam(team);
@@ -39,33 +31,30 @@ const ListTeam = ({ navigation, srch }: any) => {
       const fetchData = async () => {
         const token = await AsyncStorage.getItem('userToken');
         if (token) {
-          await getTeam({txt: srch}, token);
-          console.log(team)
+          await getTeam({ txt: '' }, token);
         }
       };
       fetchData();
-    }, [srch]),
+    }, [])
   );
 
   const handleTeamClick = (team: any) => {
-    navigation.navigate('TeamDet', {teamId:team.teamId});
+    navigation.navigate('TeamDet', { team: team });
   };
 
-  const modCmp = (nme: string) => {
-    return (
-      <>
-        <Text style={styles.modalTitle}>QR Code for {nme}</Text>
-        <Icon name="qrcode" size={100} color="brown" />
-      </>
-    );
-  };
+  const modCmp = (nme: string) => (
+    <>
+      <Text style={styles.modalTitle}>QR Code for {nme}</Text>
+      <Icon name="qrcode" size={100} color="brown" />
+    </>
+  );
 
-  const renderTeam = ({item}: any) => (
+  const renderTeam = ({ item }: any) => (
     <TouchableOpacity
       onPress={() => handleTeamClick(item)}
       style={styles.teamCard}>
       {item.logo ? (
-        <Image source={{uri: item.logo}} style={styles.teamLogo} />
+        <Image source={{ uri: item.logo }} style={styles.teamLogo} />
       ) : (
         <View style={styles.initialsContainer}>
           <Text style={styles.initialsText}>
@@ -78,7 +67,7 @@ const ListTeam = ({ navigation, srch }: any) => {
         </View>
       )}
       <View style={styles.teamInfo}>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <Text style={styles.teamName}>{item.nme}</Text>
           <Text style={styles.membersCount}>{item.cnt}</Text>
         </View>
@@ -90,22 +79,22 @@ const ListTeam = ({ navigation, srch }: any) => {
     </TouchableOpacity>
   );
 
-  if (!team || team.length === 0) {
-    return (
-      <View style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>No teams available.</Text>
-      </View>
-    );
-  }
-
   return (
     <>
-      <FlatList
-        data={team}
-        renderItem={renderTeam}
-        keyExtractor={item => item.teamId.toString()}
-        style={styles.listContainer}
-      />
+      <SrchInput keyword="Search Team" typ='default' onChng={getTeam} />
+      {team && team.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>No teams available.</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={team}
+          renderItem={renderTeam}
+          keyExtractor={item => item.teamId.toString()}
+          style={styles.listContainer}
+        />
+      )}
+
       {selectedTeam && (
         <ModalMid
           visible={modalVisible}
@@ -164,7 +153,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'grey',
   },
-
   initialsContainer: {
     width: 50,
     height: 50,

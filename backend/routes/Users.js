@@ -23,7 +23,6 @@ router.post('/login', async (req, res) => {
 
         connection.query("CALL users(?)", [JSON.stringify(param)], async (err, result) => {
             if (err) {
-                console.error('Database error:', err);
                 return res.status(500).json({ error: 'Database error', details: err });
             }
             const user = result[0][0];
@@ -36,7 +35,6 @@ router.post('/login', async (req, res) => {
             res.status(200).json({token: token, typ:user.typ});
         });
     } catch (err) {
-        console.error('Server error:', err);
         res.status(500).json({ error: 'Server error', details: err });
     }
 });
@@ -57,7 +55,7 @@ router.get('/getMem', async (req, res)=>{
         // const hashedMobTel = hashMobileNumber(param.txt);
         // param.txt = hashedMobTel;        
         const paramStr = JSON.stringify(param);
-        console.log(123)
+        
         connection.query("CALL users(?)", [paramStr], (err, result) => {
             if(err){
                 res.send("Error ->" + JSON.stringify(err));

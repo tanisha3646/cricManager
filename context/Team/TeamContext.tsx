@@ -6,6 +6,8 @@ interface TeamContextType {
   addTeam: (det: any, token:any) => Promise<void>;
   getTeam: (det: any, token:any) => Promise<void>;
   addTeamMem: (det: any, token:any) => Promise<void>;
+  teamMem: any;
+  getTeamMem: (det: any, token:any) => Promise<void>;
 }
 const TeamContext = React.createContext<TeamContextType | undefined>(undefined);
 

@@ -35,7 +35,7 @@ const UserState = (props: any) => {
   };
   
   return (
-    <UserContext.Provider value={{token, typ, getUsr, getMem, mem}}>
+    <UserContext.Provider value={{token, typ, getUsr, getMem, mem, setMem}}>
       {props.children}
     </UserContext.Provider>
   );

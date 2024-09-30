@@ -9,22 +9,22 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserContext from '../context/User/UserContext';
 import ListMem from './ListMem';
 
-const TeamDet = ({ navigation }: any) => {
+const TeamDet = ({ navigation, route }: any) => {
+  const team = route?.params?.team || null;
   const context = useContext(TeamContext);
   const context1 = useContext(UserContext);
   if (!context || !context1) {
     throw new Error('useContext must be used within a TeamProvider or UserProvider');
   }
 
-  const { addTeam, addTeamMem } = context;
-  const { getMem, mem } = context1;
+  const { addTeam, addTeamMem, teamMem, getTeamMem } = context;
+  const { getMem, mem, setMem } = context1;
 
   const [logo, setLogo] = useState<string | null>(null);
   const [nme, setNme] = useState<string>('');
   const [loc, setLoc] = useState<string>('');
   const [tag, setTag] = useState<string>('');
   const [submitted, setSubmitted] = useState<boolean>(false);
-  const [srch, setSrch] = useState('');
 
   const addTeams = async () => {
     setSubmitted(true);
@@ -43,15 +43,27 @@ const TeamDet = ({ navigation }: any) => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const token = await AsyncStorage.getItem('userToken');
-      if (token && srch.length > 0) {
-        await getMem({ txt: srch }, token);
-      }
-    };
-  
-    fetchData();
-  }, [srch]);
+    if(team){
+      setLogo(team.logo);
+      setNme(team.nme);
+      setLoc(team.loc);
+      setTag(team.tag);
+      const fetchData = async () => {
+        const token = await AsyncStorage.getItem('userToken');
+        if (token) {
+          await getTeamMem({ teamId: team.teamId }, token);
+          setMem('');
+        }
+      };
+      fetchData();
+    }
+    else{
+      setLogo('');
+      setNme('');
+      setLoc('');
+      setTag('');
+    }
+  },[team]);
 
   const renderTeamHeader = () => (
     <TeamLine logo={logo} setLogo={setLogo} nme={nme} setNme={setNme} loc={loc} setLoc={setLoc} tag={tag} setTag={setTag} submitted={submitted} />
@@ -60,25 +72,34 @@ const TeamDet = ({ navigation }: any) => {
   return (
     <SafeAreaView style={app.splashContainer}>
       <View style={app.container}>
-        <FlatList
-          data={mem}
-          ListHeaderComponent={
-            <View>
-              {renderTeamHeader()}
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 10 }}>
-                <View style={{ flex: 1 }}>
-                  <SrchInput keyword="Enter name or a valid number" srch={srch} setSrch={setSrch} typ="default" />
-                </View>
-                <View style={{ marginLeft: 10 }}>
-                  <ContactSrch />
-                </View>
-              </View>
-            </View>
-          }
-          renderItem={({ item }) => <ListMem members={[item]} />}
-          keyExtractor={(item) => item.usrId.toString()}
-          ListEmptyComponent={<Text style={{ textAlign: 'center', marginTop: 20 }}>No members found.</Text>}
-        />
+        {renderTeamHeader()}
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 10 }}>
+          <View style={{ flex: 1 }}>
+            <SrchInput keyword="Enter name or a valid number" typ="default" onChng={getMem} />
+          </View>
+          <View style={{ marginLeft: 10 }}>
+            <ContactSrch />
+          </View>
+        </View>
+
+        {/* teamMem list */}
+        {teamMem ? (
+          <FlatList
+            data={teamMem}
+            renderItem={MemberCard}
+            keyExtractor={(item) => item.memId.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+        ) : null}
+
+        {/* ListMem positioned above teamMem */}
+        {mem ? (
+          <View style={styles.overlay}>
+            <ListMem members={mem} addMem={addTeamMem} />
+          </View>
+        ) : null}
+
         <TouchableOpacity style={app.button} onPress={addTeams}>
           <Text style={app.buttonText}>Create Team</Text>
         </TouchableOpacity>
@@ -132,6 +153,19 @@ const TeamLine = ({ logo, setLogo, nme, setNme, loc, setLoc, tag, setTag, submit
   );
 };
 
+const MemberCard = ({ item }: any) => (
+  <View style={styles.memberCard}>
+    {item.img ? (
+      <Image source={{ uri: item.img }} style={styles.memberImage} />
+    ) : (
+      <View style={styles.initialsContainer}>
+        <Text style={styles.initialsText}>{item.nme.charAt(0).toUpperCase()}</Text>
+      </View>
+    )}
+    <Text style={styles.memberName}>{item.nme}</Text>
+  </View>
+);
+
 const styles = StyleSheet.create({
   container: {
     width: 100,
@@ -159,6 +193,41 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginTop: 5,
+  },
+  memberCard: {
+    alignItems: 'center',
+    marginVertical: 10,
+    width: 80,
+  },
+  memberImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  initialsContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'brown',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  initialsText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  memberName: {
+    marginTop: 5,
+    textAlign: 'center',
+    fontSize: 14,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 350, // Adjust this based on the position of the teamMem list
+    left: 0,
+    right: 0,
+    zIndex: 1,
   },
 });
 

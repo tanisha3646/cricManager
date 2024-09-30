@@ -41,11 +41,9 @@ const Team = ({route}:any ) => {
 };
 
 const Teams = ({ navigation }: any) => {
-  const [srch, setSrch] = useState('');
   return (
     <SafeAreaView style={app.splashContainer}>
-      <SrchInput keyword="Search Team" srch={srch} setSrch = {setSrch} typ='default'/>
-      <ListTeam navigation={navigation} srch={srch}/>
+      <ListTeam navigation={navigation}/>
       <TouchableOpacity style={app.button} onPress={() => { navigation.navigate('TeamDet'); }}>
         <Text style={app.buttonText}>Add Team</Text>
       </TouchableOpacity>
