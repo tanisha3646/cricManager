@@ -60,8 +60,23 @@ const TeamState = (props: any) => {
       setTeamMem(res);
   };
 
+  const delTeamMem = async (det:any, token :any) => {
+    console.log(det)
+    const response = await fetch(`${host}/api/Team/delTeamMem`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(det)
+    });
+    const res = await response.json();
+    if(res)
+      setTeamMem(res);
+  };
+
   return (
-    <TeamContext.Provider value={{ team, setTeam, addTeam, getTeam, addTeamMem, teamMem,getTeamMem}}>
+    <TeamContext.Provider value={{ team, setTeam, addTeam, getTeam, addTeamMem, teamMem,getTeamMem, delTeamMem}}>
       {props.children}
     </TeamContext.Provider>
   );

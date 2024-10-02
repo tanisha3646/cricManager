@@ -24,7 +24,11 @@ const ListMem = ({ members, addMem}: any) => {
         <Text style={styles.memberMob}>{item.mobNo}</Text>
       </View>
       <TouchableOpacity onPress={() => addMember(item)}>
-        <Icon name="plus" size={20} color="brown" />
+        {item.isMem == 1 ? (
+          <Icon name="check" size={20} color="green" />
+        ) : (
+          <Icon name="plus" size={20} color="brown" />
+        )}
       </TouchableOpacity>
     </View>
   );

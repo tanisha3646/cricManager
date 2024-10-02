@@ -8,6 +8,7 @@ import TeamContext from '../context/Team/TeamContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserContext from '../context/User/UserContext';
 import ListMem from './ListMem';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const TeamDet = ({ navigation, route }: any) => {
   const team = route?.params?.team || null;
@@ -17,13 +18,14 @@ const TeamDet = ({ navigation, route }: any) => {
     throw new Error('useContext must be used within a TeamProvider or UserProvider');
   }
 
-  const { addTeam, addTeamMem, teamMem, getTeamMem } = context;
+  const { addTeam, addTeamMem, teamMem, getTeamMem, delTeamMem } = context;
   const { getMem, mem, setMem } = context1;
 
   const [logo, setLogo] = useState<string | null>(null);
   const [nme, setNme] = useState<string>('');
   const [loc, setLoc] = useState<string>('');
   const [tag, setTag] = useState<string>('');
+  const [id, setId] = useState<Number>(0);
   const [submitted, setSubmitted] = useState<boolean>(false);
 
   const addTeams = async () => {
@@ -34,7 +36,7 @@ const TeamDet = ({ navigation, route }: any) => {
         loc: loc,
         logo: logo ? logo : '',
         tag: tag,
-        usrId: 0,
+        teamId: 0,
       };
 
       await addTeam(data, await AsyncStorage.getItem('userToken'));
@@ -53,6 +55,7 @@ const TeamDet = ({ navigation, route }: any) => {
         if (token) {
           await getTeamMem({ teamId: team.teamId }, token);
           setMem('');
+          setId(team.teamId);
         }
       };
       fetchData();
@@ -62,12 +65,20 @@ const TeamDet = ({ navigation, route }: any) => {
       setNme('');
       setLoc('');
       setTag('');
+      setId(0);
     }
   },[team]);
 
   const renderTeamHeader = () => (
     <TeamLine logo={logo} setLogo={setLogo} nme={nme} setNme={setNme} loc={loc} setLoc={setLoc} tag={tag} setTag={setTag} submitted={submitted} />
   );
+
+  const delMem = async(memId:any)=>{
+    const token = await AsyncStorage.getItem('userToken');
+    if (token) {
+      await delTeamMem({ memId: memId, teamId:id }, token);
+    }
+  }
 
   return (
     <SafeAreaView style={app.splashContainer}>
@@ -85,15 +96,18 @@ const TeamDet = ({ navigation, route }: any) => {
         {/* teamMem list */}
         {teamMem ? (
           <FlatList
-            data={teamMem}
-            renderItem={MemberCard}
-            keyExtractor={(item) => item.memId.toString()}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          />
+          data={teamMem}
+          renderItem={({ item }) => (
+            <MemberCard
+              item={item}
+              onRemove={delMem}
+            />
+          )}
+          keyExtractor={(item) => item.memId.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        />
         ) : null}
-
-        {/* ListMem positioned above teamMem */}
         {mem ? (
           <View style={styles.overlay}>
             <ListMem members={mem} addMem={addTeamMem} />
@@ -101,7 +115,7 @@ const TeamDet = ({ navigation, route }: any) => {
         ) : null}
 
         <TouchableOpacity style={app.button} onPress={addTeams}>
-          <Text style={app.buttonText}>Create Team</Text>
+          <Text style={app.buttonText}>{id==0?'Create Team':'Save'}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -153,7 +167,7 @@ const TeamLine = ({ logo, setLogo, nme, setNme, loc, setLoc, tag, setTag, submit
   );
 };
 
-const MemberCard = ({ item }: any) => (
+const MemberCard = ({ item, onRemove}: any) => (
   <View style={styles.memberCard}>
     {item.img ? (
       <Image source={{ uri: item.img }} style={styles.memberImage} />
@@ -162,6 +176,9 @@ const MemberCard = ({ item }: any) => (
         <Text style={styles.initialsText}>{item.nme.charAt(0).toUpperCase()}</Text>
       </View>
     )}
+    <TouchableOpacity onPress={async() => onRemove(item.memId)} style={styles.removeIconContainer}>
+      <Icon name="minus" size={14} color="brown" />
+    </TouchableOpacity>
     <Text style={styles.memberName}>{item.nme}</Text>
   </View>
 );
@@ -197,7 +214,7 @@ const styles = StyleSheet.create({
   memberCard: {
     alignItems: 'center',
     marginVertical: 10,
-    width: 80,
+    width: 80
   },
   memberImage: {
     width: 50,
@@ -228,6 +245,14 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 1,
+  },
+  removeIconContainer: {
+    position: 'absolute',
+    top: 0, 
+    right: 0, 
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 2,
   },
 });
 

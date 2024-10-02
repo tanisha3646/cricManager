@@ -45,7 +45,7 @@ const Teams = ({ navigation }: any) => {
     <SafeAreaView style={app.splashContainer}>
       <ListTeam navigation={navigation}/>
       <TouchableOpacity style={app.button} onPress={() => { navigation.navigate('TeamDet'); }}>
-        <Text style={app.buttonText}>Add Team</Text>
+        <Text style={app.buttonText}>Add</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
