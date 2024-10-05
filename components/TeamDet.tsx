@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserContext from '../context/User/UserContext';
 import ListMem from './ListMem';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import config from '../config';
 
 const TeamDet = ({ navigation, route }: any) => {
   const team = route?.params?.team || null;
@@ -129,7 +130,7 @@ const TeamLine = ({ logo, setLogo, nme, setNme, loc, setLoc, tag, setTag, submit
     <View>
       <TouchableOpacity style={styles.container} onPress={() => setModalVisible(true)}>
         {logo ? (
-          <Image source={{ uri: logo }} style={styles.logo} />
+          <Image source={{ uri: `${config.API_URL}/uploads/${logo}` }} style={styles.logo} />
         ) : (
           <Text style={styles.text}>Add Logo</Text>
         )}

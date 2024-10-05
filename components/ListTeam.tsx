@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import ModalMid from './ModalMid';
 import SrchInput from './SrchInput';
+import config from '../config';
 
 const ListTeam = ({ navigation }: any) => {
   const context = useContext(TeamContext);
@@ -54,7 +55,7 @@ const ListTeam = ({ navigation }: any) => {
       onPress={() => handleTeamClick(item)}
       style={styles.teamCard}>
       {item.logo ? (
-        <Image source={{ uri: item.logo }} style={styles.teamLogo} />
+        <Image source={{ uri: `${config.API_URL}/uploads/${item.logo}` }} style={styles.teamLogo} />
       ) : (
         <View style={styles.initialsContainer}>
           <Text style={styles.initialsText}>

@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { Text, View, TouchableOpacity, SafeAreaView, Image, FlatList, StyleSheet } from 'react-native';
 import app from '../style';
-import SrchInput from './SrchInput';
 import TeamDet from './TeamDet';
 import ListTeam from './ListTeam';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
