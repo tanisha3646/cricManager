@@ -40,7 +40,6 @@ const TeamState = (props: any) => {
     });
   
     const res = await response.json();
-    console.log(res);
     setTeam(res);
   };
   

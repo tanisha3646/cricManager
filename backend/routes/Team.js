@@ -93,7 +93,6 @@ router.put('/addTeam', upload.single('image'), async (req, res) => {
                         }                    
                     });
                 } 
-                console.log(result[1])
                 if(result[1]) {
                     return res.send(JSON.stringify(result[1]));
                 }
