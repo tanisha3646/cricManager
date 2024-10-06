@@ -5,7 +5,6 @@ const app = express()
 
 app.use(cors())
 const port = 5001
-
 app.use(express.json());
 
 app.use('/api/team', require('./routes/Team'));

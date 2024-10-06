@@ -37,7 +37,7 @@ const TeamDet = ({ navigation, route }: any) => {
         loc: loc,
         logo: logo ? logo : '',
         tag: tag,
-        teamId: 0,
+        teamId: id,
       };
 
       await addTeam(data, await AsyncStorage.getItem('userToken'));
@@ -47,7 +47,9 @@ const TeamDet = ({ navigation, route }: any) => {
 
   useEffect(() => {
     if(team){
-      setLogo(team.logo);
+      setMem('');
+      setId(team.teamId);
+      setLogo(`${config.API_URL}/uploads/${team.logo}`);
       setNme(team.nme);
       setLoc(team.loc);
       setTag(team.tag);
@@ -55,23 +57,22 @@ const TeamDet = ({ navigation, route }: any) => {
         const token = await AsyncStorage.getItem('userToken');
         if (token) {
           await getTeamMem({ teamId: team.teamId }, token);
-          setMem('');
-          setId(team.teamId);
         }
       };
       fetchData();
     }
     else{
+      setId(0);
+      setMem('');
       setLogo('');
       setNme('');
       setLoc('');
       setTag('');
-      setId(0);
     }
   },[team]);
 
   const renderTeamHeader = () => (
-    <TeamLine logo={logo} setLogo={setLogo} nme={nme} setNme={setNme} loc={loc} setLoc={setLoc} tag={tag} setTag={setTag} submitted={submitted} />
+    <TeamLine logo={logo} setLogo={setLogo} nme={nme} setNme={setNme} loc={loc} setLoc={setLoc} tag={tag} setTag={setTag} submitted={submitted} id = {id} />
   );
 
   const delMem = async(memId:any)=>{
@@ -123,14 +124,14 @@ const TeamDet = ({ navigation, route }: any) => {
   );
 };
 
-const TeamLine = ({ logo, setLogo, nme, setNme, loc, setLoc, tag, setTag, submitted }: any) => {
+const TeamLine = ({ logo, setLogo, nme, setNme, loc, setLoc, tag, setTag, submitted, id }: any) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <View>
       <TouchableOpacity style={styles.container} onPress={() => setModalVisible(true)}>
         {logo ? (
-          <Image source={{ uri: `${config.API_URL}/uploads/${logo}` }} style={styles.logo} />
+          <Image source={{ uri:logo }} style={styles.logo} />
         ) : (
           <Text style={styles.text}>Add Logo</Text>
         )}

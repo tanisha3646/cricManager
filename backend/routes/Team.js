@@ -58,12 +58,13 @@ router.get('/getTeam', async (req, res)=>{
     }
 });
 
-router.put('/addTeam', upload.single('image'), async (req, res)=>{
+router.put('/addTeam', upload.single('image'), async (req, res) => {
     const param = JSON.parse(req.body.det);
     const authHeader = req.headers.authorization;  
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).send("No token provided or invalid format");
+        return res.status(401).send("No token provided or invalid format");
     }
+    
     const token = authHeader.split(' ')[1]; 
     const decoded = jwt.verify(token, JWT_SECRET);
     const usrId = decoded.id;
@@ -74,9 +75,10 @@ router.put('/addTeam', upload.single('image'), async (req, res)=>{
     
     try {
         connection.query("CALL teams(?)", [paramStr], (err, result) => {
-            if(err){
-                res.send("Error ->" + JSON.stringify(err));
-            }else{
+            if(err) {
+                return res.send("Error ->" + JSON.stringify(err));
+            }
+            else{
                 const logo = result[0][0].logo; 
                 req.logoPath = path.basename(logo);
                 
@@ -88,19 +90,20 @@ router.put('/addTeam', upload.single('image'), async (req, res)=>{
                         if (err) {
                             console.error('Error renaming file:', err);
                             return res.status(500).send('Error uploading image');
-                        }
-                        console.log('File uploaded successfully:', newPath);
+                        }                    
                     });
+                } 
+                console.log(result[1])
+                if(result[1]) {
+                    return res.send(JSON.stringify(result[1]));
                 }
-                if(result[0][1])                    
-                    res.send(JSON.stringify(result[0][1]));
             }
-        })
-    }
-    catch(err){
+        });
+    } catch(err) {
         res.send("Error ->" + JSON.stringify(err));
     }
 });
+
 
 router.post('/addTeamMem', async (req, res)=>{
     const param = req.body

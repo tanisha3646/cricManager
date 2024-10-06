@@ -19,7 +19,6 @@ const requestCameraPermission = async () => {
       );
       return granted === PermissionsAndroid.RESULTS.GRANTED;
     } catch (err) {
-      console.warn(err);
       return false;
     }
   }
@@ -42,7 +41,6 @@ const requestExternalStoragePermission = async () => {
       );
       return granted === PermissionsAndroid.RESULTS.GRANTED;
     } catch (err) {
-      console.warn(err);
       return false;
     }
   }
@@ -61,8 +59,6 @@ const AddImg = ({ modalVisible, setModalVisible, setImg, comp }: any) => {
         presentationStyle: 'popover',
       });
       handleImagePickerResult(result);
-    } else {
-      console.log('Storage permission denied');
     }
   };
 
@@ -77,24 +73,15 @@ const AddImg = ({ modalVisible, setModalVisible, setImg, comp }: any) => {
         presentationStyle: 'popover',
       });
       handleImagePickerResult(result);
-    } else {
-      console.log('Camera permission denied');
     }
   };
 
   const handleImagePickerResult = (result: any) => {
     if (result) {
-      if (result.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (result.errorCode) {
-        console.log('ImagePicker Error: ', result.errorMessage);
-      } else if (result.assets && result.assets.length > 0) {
+      if (result.assets && result.assets.length > 0) {
         const uri = result.assets[0].uri;
         if (uri) {
-          console.warn(uri)
           setImg(uri);
-        } else {
-          console.log('Image URI is undefined');
         }
       }
     }

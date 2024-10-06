@@ -20,15 +20,17 @@ const TeamState = (props: any) => {
     setTeam(res);
   };
 
-  const addTeam = async (det:any, token :any) => {
+  const addTeam = async (det:any, token: any) => {
     const formData = new FormData();
-    formData.append('det', JSON.stringify(det)); 
+    console.log('Image URI:', det.logo);
+
+    formData.append('det', JSON.stringify(det));
     formData.append('image', {
       uri: det.logo, 
       type: 'image/jpeg', 
-      name: det.teamId+'_logo.jpg',
+      name: `${det.teamId}_logo.jpg`,
     });
-
+  
     const response = await fetch(`${host}/api/team/addTeam`, {
       method: "PUT",
       headers: {
@@ -36,9 +38,13 @@ const TeamState = (props: any) => {
       },
       body: formData,
     });
+  
     const res = await response.json();
+    console.log(res);
     setTeam(res);
   };
+  
+  
 
   const addTeamMem = async (det:any, token :any) => {
     const response = await fetch(`${host}/api/team/addTeamMem`, {
